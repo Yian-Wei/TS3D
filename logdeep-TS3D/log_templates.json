@@ -1,0 +1,125 @@
+{
+  "1": {
+    "EventTemplate": ".*Database connection successful.*"
+  },
+  "2": {
+    "EventTemplate": ".*Order data query successful.*"
+  },
+  "3": {
+    "EventTemplate": ".*Order update successful.*"
+  },
+  "4": {
+    "EventTemplate": ".*Order deletion successful.*"
+  },
+  "5": {
+    "EventTemplate": ".*Order insertion successful.*"
+  },
+  "6": {
+    "EventTemplate": ".*Order data query failed.*"
+  },
+  "7": {
+    "EventTemplate": ".*Order update failed.*"
+  },
+  "8": {
+    "EventTemplate": ".*Order deletion failed.*"
+  },
+  "9": {
+    "EventTemplate": ".*Order insertion failed.*"
+  },
+  "10": {
+    "EventTemplate": ".*Payment data query successful.*"
+  },
+  "11": {
+    "EventTemplate": ".*Payment deletion successful.*"
+  },
+  "12": {
+    "EventTemplate": ".*Payment insertion successful.*"
+  },
+  "13": {
+    "EventTemplate": ".*Payment update successful.*"
+  },
+  "14": {
+    "EventTemplate": ".*Payment data query failed.*"
+  },
+  "15": {
+    "EventTemplate": ".*Payment deletion failed.*"
+  },
+  "16": {
+    "EventTemplate": ".*Payment insertion failed.*"
+  },
+  "17": {
+    "EventTemplate": ".*Payment update failed.*"
+  },
+  "18": {
+    "EventTemplate": ".*User data query successful.*"
+  },
+  "19": {
+    "EventTemplate": ".*User update successful.*"
+  },
+  "20": {
+    "EventTemplate": ".*User deletion successful.*"
+  },
+  "21": {
+    "EventTemplate": ".*User insertion successful.*"
+  },
+  "22": {
+    "EventTemplate": ".*User data query failed.*"
+  },
+  "23": {
+    "EventTemplate": ".*User update failed.*"
+  },
+  "24": {
+    "EventTemplate": ".*User deletion failed.*"
+  },
+  "25": {
+    "EventTemplate": ".*User insertion failed.*"
+  },
+  "26": {
+    "EventTemplate": ".*Driver data query successful.*"
+  },
+  "27": {
+    "EventTemplate": ".*Driver insertion successful.*"
+  },
+  "28": {
+    "EventTemplate": ".*Driver deletion successful.*"
+  },
+  "29": {
+    "EventTemplate": ".*Driver update successful.*"
+  },
+  "30": {
+    "EventTemplate": ".*Driver data query failed.*"
+  },
+  "31": {
+    "EventTemplate": ".*Driver insertion failed.*"
+  },
+  "32": {
+    "EventTemplate": ".*Driver deletion failed.*"
+  },
+  "33": {
+    "EventTemplate": ".*Driver update failed.*"
+  },
+  "34": {
+    "EventTemplate": ".*floating point alignment exceptions.*"
+  },
+  "35": {
+    "EventTemplate": ".*select.* query successful.*"
+  },
+  "36": {
+    "EventTemplate": ".*select.* query failed.*"
+  },
+  "37": {
+    "EventTemplate": ".*update.* execution failed.*"
+  },
+  "38": {
+    "EventTemplate": ".*update.* execution successful.*"
+  },
+  "39": {
+    "EventTemplate": ".*Task .*: API call successful.*"
+  },
+  "40": {
+    "EventTemplate": ".*Task .*: API call failed.*"
+  },
+  "41": {
+    "EventTemplate": ".*:.* .*:.*"
+  }
+}
