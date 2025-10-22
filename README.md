@@ -8,7 +8,7 @@ Download TS3D datasets from [here](https://drive.google.com/drive/folders/1DptJN
 ### Data Preparation
 After downloading the raw dataset, please preprocess it into the same format as the examples in 
 ```
-data/s2s/.
+data/s2s/
 ```
 You can either preprocess it manually or use the provided script to automate the process.
 ```
