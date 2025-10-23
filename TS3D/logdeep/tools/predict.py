@@ -144,9 +144,6 @@ class Predicter:
 
         test_normal_length = sum(v['count'] for v in normal_session_data_map.values())
         test_abnormal_length = sum(v['count'] for v in abnormal_session_data_map.values())
-        TP = 0
-        FP = 0
-        skipped_abnormal = 0
         start_time = time.time()
         all_labels = []
         all_predicted = []
@@ -156,8 +153,6 @@ class Predicter:
                 session_data = normal_session_data_map.get(line)
                 if session_data is None: 
                     continue
-
-                session_count = session_data['count']
 
                 metrics_vector = session_data['metrics']
                 metrics_input = torch.tensor(metrics_vector, dtype=torch.float)\
@@ -192,7 +187,6 @@ class Predicter:
                 if error_count / len(line) > 0.1:  
                     is_abnormal_session = True
                 if is_abnormal_session:
-                    FP += session_count
                     all_predicted.append(1)
                 else:
                     all_predicted.append(0)
@@ -207,9 +201,6 @@ class Predicter:
                 metrics_vector = session_data['metrics']
                 metrics_input = torch.tensor(metrics_vector, dtype=torch.float)\
                                     .view(1, self.metrics_dim).to(self.device)
-                if len(line) < self.window_size:
-                    skipped_abnormal += session_count
-                    continue
                 is_abnormal_session = False
                 for i in range(len(line) - self.window_size):
                     seq0 = line[i : i + self.window_size]
@@ -237,28 +228,16 @@ class Predicter:
                         break  
 
                 if is_abnormal_session:
-                    TP += session_count
                     all_predicted.append(1)
                 else:
                     all_predicted.append(0)
                 all_labels.append(1)
                         
-        valid_abnormal = test_abnormal_length - skipped_abnormal
-        FN = valid_abnormal - TP
-    
-        P = 100 * TP / (TP + FP) if (TP + FP) > 0 else 0
-        R = 100 * TP / (TP + FN) if (TP + FN) > 0 else 0
-        F1 = 2 * P * R / (P + R) if (P + R) > 0 else 0
-        
+ 
         metrics = get_metrics(np.array(all_predicted),labels = np.array(all_labels), pred=np.array(all_predicted))
         print(metrics)
         print(f"Total Normal Sessions Tested: {test_normal_length}")
         print(f"Total Abnormal Sessions Tested: {test_abnormal_length}")
-        print(
-            "false positive (FP): {}, false negative (FN): {}, Precision: {:.3f}%, Recall: {:.3f}%, F1-measure: {:.3f}%".format(
-                FP, FN, P, R, F1
-            )
-        )
         print("Finished Predicting")
         elapsed_time = time.time() - start_time
         print("elapsed_time: {}".format(elapsed_time))
@@ -285,7 +264,6 @@ class Predicter:
         all_labels = []
         all_predicted = []
         tbar = tqdm(self.test_loader, desc="\r")
-        TP, FP, FN, TN = 0, 0, 0, 0
         for i, (log, label) in enumerate(tbar):
             features = []
             for value in log.values():
@@ -297,17 +275,6 @@ class Predicter:
             label = np.array([y.cpu() for y in label])
             all_labels.extend(label.tolist()) 
             all_predicted.extend(predicted.tolist())
-            TP += ((predicted == 1) * (label == 1)).sum()
-            FP += ((predicted == 1) * (label == 0)).sum()
-            FN += ((predicted == 0) * (label == 1)).sum()
-            TN += ((predicted == 0) * (label == 0)).sum()
-        P = 100 * TP / (TP + FP)
-        R = 100 * TP / (TP + FN)
-        F1 = 2 * P * R / (P + R)
-        print(
-            "false positive (FP): {}, false negative (FN): {}, Precision: {:.3f}%, Recall: {:.3f}%, F1-measure: {:.3f}%".format(
-                FP, FN, P, R, F1
-            )
-        )
         metrics = get_metrics(np.array(all_predicted),labels = np.array(all_labels), pred=np.array(all_predicted))
         print(metrics)
+
