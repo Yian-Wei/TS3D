@@ -277,4 +277,3 @@ class Predicter:
             all_predicted.extend(predicted.tolist())
         metrics = get_metrics(np.array(all_predicted),labels = np.array(all_labels), pred=np.array(all_predicted))
         print(metrics)
-
