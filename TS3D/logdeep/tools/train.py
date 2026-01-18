@@ -26,7 +26,9 @@ class Trainer():
         self.data_dir = options['data_dir']
         self.window_size = options['window_size']
         self.batch_size = options['batch_size']
-
+        self.importance_ema = None 
+        self.current_epoch = 0      
+        self.global_step = 0
         self.device = options['device']
         self.lr_step = options['lr_step']
         self.lr_decay_ratio = options['lr_decay_ratio']
@@ -165,6 +167,7 @@ class Trainer():
             print("Failed to save logs")
 
     def train(self, epoch, options):
+        self.current_epoch = epoch
         self.log['train']['epoch'].append(epoch)
         start = time.strftime("%H:%M:%S")
         lr = self.optimizer.state_dict()['param_groups'][0]['lr']
@@ -175,20 +178,34 @@ class Trainer():
         self.model.train()
         self.optimizer.zero_grad()
         criterion = nn.CrossEntropyLoss()
-        tbar = tqdm(self.train_loader, desc="\r")
+        tbar = tqdm(
+            self.train_loader,
+            desc="Train",
+            bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} "
+                    "[{elapsed_s:.2f}s<{remaining_s:.2f}s, {rate_fmt}]"
+        )
         num_batch = len(self.train_loader)
         total_losses = 0
         for i, (log, label) in enumerate(tbar):
             features = []
-            for value in log.values():
-                features.append(value.clone().detach().to(self.device))
+            for idx, value in enumerate(log.values()):
+                val = value.clone().detach().to(self.device).float()
+
+                is_metrics = False
+                if self.model_name in ['deeplog', 'robustlog'] and idx == 1: is_metrics = True
+                if self.model_name == 'loganomaly' and idx == 2: is_metrics = True
+                
+                if is_metrics:
+                    val.requires_grad_(True)
+                    
+                features.append(val)
             output = self.model(features=features, device=self.device)
             loss = criterion(output, label.to(self.device))
             total_losses += float(loss)
             loss /= self.accumulation_step
             loss.backward()
-            self.apply_feature_mask(options, self.model, self.device, features)
             if (i + 1) % self.accumulation_step == 0:
+                self.apply_feature_mask(options, self.model, self.device, features)
                 self.optimizer.step()
                 self.optimizer.zero_grad()
             tbar.set_description("Train loss: %.5f" % (total_losses / (i + 1)))
@@ -240,51 +257,61 @@ class Trainer():
             self.save_checkpoint(epoch, save_optimizer=True, suffix="last")
             self.save_log()
 
-    def apply_feature_mask(self, options, model, device, features):
-        """
-        只对 Metrics 特征 (features[1]) 做自适应 mask
-        """
-        if not options["mask_fnn"]:
+    def apply_feature_mask(self, options, model, device, features): 
+        if not options.get("mask_fnn", False): 
+            model.feature_mask = None 
             return
+        
+        warm_up_epochs = options.get("warm_up", 10) 
+        if self.current_epoch < warm_up_epochs: 
+            model.feature_mask = None 
+            return 
+        
+        m_idx = 2 if self.model_name == 'loganomaly' else 1 
+        input_metrics = features[m_idx] 
 
-        metrics_dim = features[1].size(1)  
-        for name, parms in model.named_parameters():
-            if "fc.3.weight" not in name or parms.grad is None:
-                continue
+        if input_metrics.grad is None:
+            return 
+        
+        current_importance = input_metrics.grad.abs().mean(dim=0) 
+        
+        if self.importance_ema is None: 
+            self.importance_ema = current_importance.detach().clone() 
+        else:
+            self.importance_ema = 0.9 * self.importance_ema + 0.1 * current_importance.detach()
 
-            gn = parms.grad.data**2
-            wn = parms.data**2
-            # 自适应指标
-            if options["gn_mode"] == "gn_wn":
-                mask_miu = (gn / (wn + 1e-8)).to(device)
-            elif options["gn_mode"] == "gn":
-                mask_miu = gn.to(device)
-            elif options["gn_mode"] == "sqrt_gn":
-                mask_miu = torch.sqrt(gn).to(device)
-            else:
-                continue
+        metrics_dim = self.metrics_dim 
+        keep_ratio = options.get("keep_ratio", 0.3) 
+        keep_p = max(1, int(metrics_dim * keep_ratio)) 
 
-            start_idx = 0 
-            end_idx = metrics_dim
+        mask = torch.full((1, metrics_dim), 0.1, device=device) 
 
-            mask_copy = torch.zeros_like(mask_miu)
-            mask_copy[:, start_idx:end_idx] = mask_miu[:, start_idx:end_idx]
-            mask_miu = mask_copy
+        mode = options.get("sample_mode", "TopK") 
+        if mode == "TopK": 
+            _, keep_idx = torch.topk(self.importance_ema, k=keep_p) 
+        elif mode == "Adaptive": 
+            prob = self.importance_ema / (self.importance_ema.sum() + 1e-12) 
+            keep_idx = torch.multinomial(prob, num_samples=keep_p, replacement=False) 
+        else: 
+            keep_idx = torch.randperm(metrics_dim, device=device)[:keep_p] 
+        mask[0, keep_idx] = 1.0 
+        model.feature_mask = mask * (1.0 / keep_ratio) 
+        self.global_step += 1 
+        #if self.global_step % 100 == 0: 
+            #self._print_debug_info(mode, keep_idx, keep_p) 
+    
+    def _print_debug_info(self, mode, keep_idx, keep_p): 
+        metric_names = self._get_metrics_cols() 
+        selected_indices = keep_idx.cpu().numpy().tolist() 
+        
+        selected_info = [] 
+        for idx in selected_indices: 
+            score = self.importance_ema[idx].item() 
+            name = metric_names[idx] if idx < len(metric_names) else f"ID_{idx}" 
+            selected_info.append(f"{name}({score:.4f})") 
+        print(f"\n[DEBUG] Epoch {self.current_epoch} | Step {self.global_step} | Mode: {mode}") 
+        print(f"Selected {keep_p} Features: {', '.join(selected_info)}")
 
-            keep_p = int(metrics_dim * options["keep_ratio"])
-            mask_sum = mask_miu.sum(dim=1, keepdim=True)
-            zero_sum_rows = (mask_sum.squeeze() < 1e-10)
-            if torch.any(zero_sum_rows):
-                mask_miu[zero_sum_rows] = 1.0
-                mask_sum = mask_miu.sum(dim=1, keepdim=True)
-            importance = mask_miu / mask_sum
-            keep_idx = torch.multinomial(importance, num_samples=keep_p, replacement=False)
-
-            mask = torch.zeros_like(mask_miu)
-            for i, idx in enumerate(keep_idx):
-                mask[i, idx] = 1.0
-
-            parms.grad *= mask
 
     def _get_metrics_cols(self):
         return [
@@ -300,7 +327,6 @@ class Trainer():
         ][:self.metrics_dim]
 
     def _compute_metrics_stats(self):
-        """计算/加载训练集 Metrics 的均值和标准差。"""
         
         stats_path = self.metrics_stats_path
 
