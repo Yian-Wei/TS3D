@@ -17,16 +17,16 @@ python merge2.py
 python datapre.py
 ```
 ### Install dependencies
-1.Clone this repository.
+1. Clone this repository.
 ```
 git clone https://github.com/Yian-Wei/TS3D.git
 ```
-2.Create a new Conda environment.
+2. Create a new Conda environment.
 ```
 conda create -n ts3d python=3.12
 conda activate ts3d
 ```
-3.Install Core Dependencies
+3. Install Core Dependencies
 ```
 pip install -r requirements.txt
 ```
