@@ -19,7 +19,7 @@ python datapre.py
 ### Install dependencies
 1.Clone this repository.
 ```
-
+git clone https://github.com/Yian-Wei/TS3D.git
 ```
 2.Create a new Conda environment.
 ```
@@ -38,6 +38,10 @@ cd demo
 python deeplog.py train
 # Test
 python deeplog.py test
+```
+Alternatively, you can run the shell script.
+```
+sh run.sh
 ```
 
 ### Options
