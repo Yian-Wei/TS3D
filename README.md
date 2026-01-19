@@ -52,6 +52,7 @@ options["metrics"] = True
 options["metrics_dim"] = 29
 options["mask_fnn"] = 1
 ```
+## Experiments
 
 ### Multimodal Alignment Window Size Parameter Study
 <img width="982" height="582" alt="image" src="https://github.com/user-attachments/assets/48a10efd-ed5d-4d84-a258-762cdfe642f4" />
