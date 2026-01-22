@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import argparse
+import sys
+
+sys.path.append("../")
+
+from ts3d.models.lstm import deeplog, loganomaly, robustlog
+from ts3d.tools.predict import Predicter
+from ts3d.tools.train import Trainer
+from ts3d.tools.utils import *
+
+
+# Config Parameters
+
+options = dict()
+options["data_dir"] = "../../data/"
+options["window_size"] = 10
+options["device"] = "cpu"
+
+# Smaple
+options["sample"] = "sliding_window"
+options["window_size"] = 10  # if fix_window
+
+# Features
+options["sequentials"] = True
+options["quantitatives"] = False
+options["semantics"] = False
+options["metrics"] = True  
+options["metrics_dim"] = 29 
+
+# Model
+options["input_size"] = 1
+options["hidden_size"] = 64
+options["num_layers"] = 2
+options["num_classes"] = 32
+
+# Train
+options["batch_size"] = 2048
+options["accumulation_step"] = 1
+
+options["optimizer"] = "adam"
+options["lr"] = 0.001
+options["max_epoch"] = 370
+options["lr_step"] = (300, 350)
+options["lr_decay_ratio"] = 0.1
+
+options["resume_path"] = None
+options["model_name"] = "deeplog"
+options["save_dir"] = "../result/deeplog/"
+
+# Predict
+options["model_path"] = "../result/deeplog/deeplog_last.pth" # or _bestloss.pth
+options["num_candidates"] = 3
+
+options["mask_fnn"] = 1 
+options["gn_mode"] = "gn_wn" #  "gn", "gn_wn", "sqrt_gn"
+options["sample_mode"] = "Adaptive" #  "TopK", "random", "Adaptive"
+options["keep_ratio"] = 0.3 
+
+seed_everything(seed=1234)
+
+
+def train():
+    Model = deeplog(
+        input_size=options['input_size'],
+        hidden_size=options['hidden_size'],
+        num_layers=options['num_layers'],
+        num_keys=options['num_classes'],
+        num_metrics=29,
+        metric_dim=64,
+    )
+    trainer = Trainer(Model, options)
+    trainer.start_train(options)
+
+
+def predict():
+    Model = deeplog(
+        input_size=options['input_size'],
+        hidden_size=options['hidden_size'],
+        num_layers=options['num_layers'],
+        num_keys=options['num_classes'],
+        num_metrics=29,
+        metric_dim=64,
+    )
+    predicter = Predicter(Model, options)
+    predicter.predict_unsupervised()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("mode", choices=["train", "predict"])
+    args = parser.parse_args()
+    if args.mode == "train":
+        train()
+    else:
+        predict()
