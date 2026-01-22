@@ -1,14 +1,8 @@
 # TS3D
 ## Project Structure
-### Multimodal Anomaly Detection (TS3D/DeepLog)
-
-The main code is in TS3D/deepLog/train.py. It builds on existing log- and metric-based backbones, and adds a lightweight fusion module plus a self-adaptive masking strategy.
-Fusion Module: bidirectional cross-attention + feature fusion between log and numerical embeddings.
-
-Self-adaptive Mask: dynamically selects informative numerical features by masking less useful gradients during training.
-
-### Anomaly Detection Metrics (TS3D-F1)
-The main code is in TS3D/deepLog/metrics, including standard metrics and TS3D-F1.
+- Multimodal Anomaly Detection (TS3D/DeepLog): The main code is in TS3D/deepLog/train.py. It builds on existing log- and metric-based backbones, and adds a lightweight fusion module plus a self-adaptive masking strategy.Fusion Module: bidirectional cross-attention + feature fusion between log and numerical embeddings.Self-adaptive Mask: dynamically selects informative numerical features by masking less useful gradients during training.
+- Anomaly Detection Metrics (TS3D-F1)
+- The main code is in TS3D/deepLog/metrics, including standard metrics and TS3D-F1.
 
 ### Root Cause Analysis (TS3D/RootAnalysis)
 
