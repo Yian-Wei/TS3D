@@ -2,7 +2,7 @@
 ## Project Structure
 - Multimodal Anomaly Detection (TS3D/MultimodalAD): It builds on existing log- and metric-based backbones, and adds a lightweight fusion module plus a self-adaptive masking strategy.Fusion Module: bidirectional cross-attention + feature fusion between log and numerical embeddings.Self-adaptive Mask: dynamically selects informative numerical features by masking less useful gradients during training.
 - Anomaly Detection Metrics TS3D-F1 (TS3D/MultimodalAD/ts3d/metrics): Standard metrics and TS3D-F1.
-- Root Cause Analysis (TS3D/RootAnalysis): It builds dependency graphs (e.g., table-dependency graphs of timeout SQL templates) for root analysis.
+- Root Cause Analysis (TS3D/RootDiscovery): It builds dependency graphs (e.g., table-dependency graphs of timeout SQL templates) for root analysis.
 
 ## Get Started
 
