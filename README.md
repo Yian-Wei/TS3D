@@ -7,7 +7,7 @@ Distributed Database System Analysis]([https://www.vldb.org/pvldb/vol16/p3363-kh
 The project is structured as follows:
 
 - Multimodal Anomaly Detection (TS3D/MultimodalAD): builds on existing log- and metric-based backbones, and adds a lightweight fusion module plus a self-adaptive masking strategy.Fusion Module: bidirectional cross-attention + feature fusion between log and numerical embeddings.Self-adaptive Mask: dynamically selects informative numerical features by masking less useful gradients during training.
-- Anomaly Detection Metrics TS3D-F1 (TS3D/MultimodalAD/ts3d/metrics): Standard metrics and TS3D-F1.
+- Anomaly Detection Metrics (TS3D/MultimodalAD/ts3d/metrics): Standard metrics and the new metric TS3D-F1.
 - Root Cause Analysis (TS3D/RootDiscovery): builds dependency graphs (e.g., table-dependency graphs of timeout SQL templates) for root analysis.
 
 ## Getting Started
