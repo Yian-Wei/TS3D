@@ -1,10 +1,15 @@
 # TS3D
+
+
+TS3D is a temporal multimodal dataset derived from a distributed database, with 300 million numerical data points and 90 million contextual data records. The dataset has been tested on two representative downstream tasks anomaly detection and root cause discovery. Technical details can be found in the paper [TS3D: A Temporal Multimodal Dataset for
+Distributed Database System Analysis]([https://www.vldb.org/pvldb/vol16/p3363-khelifati.pdf](https://icde2026.github.io)), ICDE'26. 
+
 ## Project Structure
 - Multimodal Anomaly Detection (TS3D/MultimodalAD): It builds on existing log- and metric-based backbones, and adds a lightweight fusion module plus a self-adaptive masking strategy.Fusion Module: bidirectional cross-attention + feature fusion between log and numerical embeddings.Self-adaptive Mask: dynamically selects informative numerical features by masking less useful gradients during training.
 - Anomaly Detection Metrics TS3D-F1 (TS3D/MultimodalAD/ts3d/metrics): Standard metrics and TS3D-F1.
 - Root Cause Analysis (TS3D/RootDiscovery): It builds dependency graphs (e.g., table-dependency graphs of timeout SQL templates) for root analysis.
 
-## Get Started
+## Getting Started
 
 ### Get Data
 Download TS3D datasets from [here](https://drive.google.com/drive/folders/1DptJNiqgXF4DlZ5rx-FXRKz_NaMyS34t)
@@ -56,18 +61,16 @@ options["metrics"] = True
 options["metrics_dim"] = 29
 options["mask_fnn"] = 1
 ```
-## Experiments
+## Experimental Results
 
 ### Multimodal Alignment Window Size Parameter Study
 <img width="982" height="582" alt="image" src="https://github.com/user-attachments/assets/48a10efd-ed5d-4d84-a258-762cdfe642f4" />
 
 The size of the window was carefully chosen based on many experiments. We report in 
-the Figure 1, the results of an experimental analysis on the same 24-hour Multi2Multi dataset to investigate the impact of different window sizes (2-10) on the performance and efficiency of multiple log-based anomaly detection methods (i.e., DeepLog, LogAnomaly, and RobustLog). As shown in Figures 1 (a)–(d), increasing the window size leads to consistent improvements in Precision, Recall, F1, and TS3D-F1 across all methods, with the most notable gains observed when the window size increases from 2 to 6. This is because larger windows capture longer event contexts, enabling models to better learn temporal dependencies and more accurately distinguish normal behaviors from anomalies. When the window size further increases to 8 or 10, the performance gains gradually saturate, indicating that excessively long contexts provide diminishing benefits and may even introduce redundant noise. From an efficiency perspective, Figure 1 (e) indicates that the overall runtime exhibits a slight decreasing trend as the window size increases. This is because, under a fixed temporal span, larger windows result in fewer generated sequence samples, thereby reducing the number of samples processed during model training. 
+Figure 1, the results of an experimental analysis on the same 24-hour Multi2Multi dataset to investigate the impact of different window sizes (2-10) on the performance and efficiency of multiple log-based anomaly detection methods (i.e., DeepLog, LogAnomaly, and RobustLog). As shown in Figures 1 (a)–(d), increasing the window size leads to consistent improvements in Precision, Recall, F1, and TS3D-F1 across all methods, with the most notable gains observed when the window size increases from 2 to 6. This is because larger windows capture longer event contexts, enabling models to better learn temporal dependencies and more accurately distinguish normal behaviors from anomalies. When the window size further increases to 8 or 10, the performance gains gradually saturate, indicating that excessively long contexts provide diminishing benefits and may even introduce redundant noise. From an efficiency perspective, Figure 1 (e) indicates that the overall runtime exhibits a slight decreasing trend as the window size increases. This is because, under a fixed temporal span, larger windows result in fewer generated sequence samples, thereby reducing the number of samples processed during model training. 
 
 
-## Contact
+## Contributors
 
-### For questions, please contact:
-
-Email: yoyoyao@zju.edu.cn yoyo185644@163.com
+- Yuanyuan Yao (contact person yoyoyao@zju.edu.cn, yoyo185644@163.com)
 
