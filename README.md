@@ -65,7 +65,7 @@ options["mask_fnn"] = 1
 ## Experimental Results
 
 ### Multimodal Alignment Window Size Parameter Study
-<img width="982" height="582" alt="image" src="https://github.com/user-attachments/assets/48a10efd-ed5d-4d84-a258-762cdfe642f4" />
+<img width="1043" height="572" alt="image" src="https://github.com/user-attachments/assets/7fb14078-635d-4232-aa28-e3b0511e9c75" />
 
 The size of the window was carefully chosen based on many experiments. We report in 
 Figure 1, the results of an experimental analysis on the same 24-hour Multi2Multi dataset to investigate the impact of different window sizes (2-10) on the performance and efficiency of multiple log-based anomaly detection methods (i.e., DeepLog, LogAnomaly, and RobustLog). As shown in Figures 1 (a)–(d), increasing the window size leads to consistent improvements in Precision, Recall, F1, and MA-F1 across all methods, with the most notable gains observed when the window size increases from 2 to 6. This is because larger windows capture longer event contexts, enabling models to better learn temporal dependencies and more accurately distinguish normal behaviors from anomalies. When the window size further increases to 8 or 10, the performance gains gradually saturate, indicating that excessively long contexts provide diminishing benefits and may even introduce redundant noise. From an efficiency perspective, Figure 1 (e) indicates that the overall runtime exhibits a slight decreasing trend as the window size increases. This is because, under a fixed temporal span, larger windows result in fewer generated sequence samples, thereby reducing the number of samples processed during model training. 
