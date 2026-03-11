@@ -4,7 +4,7 @@ import numpy as np
 
 if __name__ == '__main__':
     custom_colors = {
-        'TS3D-F1': '#FF0000',  
+        'MA-F1': '#FF0000',  
         'F1': '#4477FF',  
         'PA-F1': '#FFA500',  
         'Event-based-F1': '#4CAF50', 
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     plt.rcParams['font.family'] = 'Times New Roman'
 
     data_20 = {
-        'Metric': ['TS3D-F1', 'F1', 'PA-F1', 'Event-based-F1', 'R-based-F1',
+        'Metric': ['MA-F1', 'F1', 'PA-F1', 'Event-based-F1', 'R-based-F1',
                    'Affiliation-F1', 'AUC-PR', 'AUC-ROC', 'VUS-PR', 'VUS-ROC'],
         'Rank1': [0.9980, 0.9231, 0.9231, 0.9231, 0.8889, 0.9359, 0.8571, 0.9808, 0.9695, 0.9959],
         'Rank2': [0.9305, 0.8571, 0.8571, 0.8571, 0.8571, 0.9302, 0.7500, 0.9615, 0.9883, 0.9955],
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     }
 
     data_40 = {
-        'Metric': ['TS3D-F1', 'F1', 'PA-F1', 'Event-based-F1', 'R-based-F1',
+        'Metric': ['MA-F1', 'F1', 'PA-F1', 'Event-based-F1', 'R-based-F1',
                    'Affiliation-F1', 'AUC-PR', 'AUC-ROC', 'VUS-PR', 'VUS-ROC'],
         'Rank1': [0.9888, 0.9600, 0.9600, 0.9600, 0.9412, 0.9851, 0.9231, 0.9750, 0.9925, 0.9975],
         'Rank2': [0.9496, 0.8889, 0.8889, 0.8889, 0.8571, 0.9335, 0.8000, 0.9250, 0.9883, 0.9955],
