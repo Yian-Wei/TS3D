@@ -185,7 +185,7 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version="opt", thre
     RF1 = grader.metric_RF1(labels, score, preds=pred)
     Affiliation_F = grader.metric_Affiliation(labels, score, preds=pred)
 
-    metrics["TS3D-F1"] = F1
+    metrics["MA-F1"] = F1
     metrics["Standard-F1"] = PointF1
     metrics["PA-F1"] = PointF1PA
     metrics["Event-based-F1"] = EventF1PA
